@@ -1,7 +1,9 @@
 var divEl = document.querySelector(".search");
 var newDivEl = document.querySelector("#right-side");
 var btnEl = document.querySelector("button");
+var ulEl = document.getElementById("cities")
 var today = moment().format('MMMM Do YYYY');
+var id = 0;
 var innerHTML = ``;
 
 
@@ -35,14 +37,14 @@ function getCity(){
 }
 
 function processData(data, name){
-    clearInnerHTML()
-
-
+    
+    clearInnerHTML();
+    
     var kelv = data.current.temp - 273.15;
     var temp = kelv * 9/5 + 32; 
     var humidity = data.current.humidity;
     var wind = data.current.wind_speed;
-    var uvi = data.current.uvi;
+    var uvi = data.hourly[0].uvi;
     
     innerHTML = `
         <div class="weather">
@@ -54,6 +56,7 @@ function processData(data, name){
         </div>
     
     `;
+    createButton(name, innerHTML);
 
     $(newDivEl).append(innerHTML);
 
@@ -61,9 +64,34 @@ function processData(data, name){
 
 }
 
+function createButton(name, data){
+    
+    
+    id = id + 1;
+    var savedInnerHTML = data;
+    var listEl = document.createElement("li");
+    var buttonEl = document.createElement("button");
+    buttonEl.textContent = name;
+    buttonEl.addEventListener("click", function(){
+        clearInnerHTML();
+        innerHTML = savedInnerHTML;
+        $(newDivEl).append(innerHTML);
+    })
+    
+    
+    $(listEl).append(buttonEl);
+    $(ulEl).append(listEl);
+    
+    
+}
+
 function clearInnerHTML(){
     newDivEl.innerHTML = "";
 }
 
+
+
 btnEl.addEventListener("click", getCity);
+
+loadLocalStorage();
 
